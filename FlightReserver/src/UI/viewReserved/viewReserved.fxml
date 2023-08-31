@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1123.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.viewReserved.viewReservedController">
+   <children>
+      <TableView fx:id="flightTableView" layoutX="50.0" layoutY="73.0" prefHeight="277.0" prefWidth="1017.0">
+         <columns>
+            <TableColumn fx:id="flightNumberColumn" editable="false" prefWidth="94.0" text="Flight Number" />
+            <TableColumn fx:id="departureAirportColumn" editable="false" prefWidth="265.0" text="Departure Airport" />
+            <TableColumn fx:id="destinationAirportColumn" editable="false" minWidth="0.0" prefWidth="265.0" text="Arrival Airport" />
+            <TableColumn fx:id="departureTimeColumn" editable="false" minWidth="0.0" prefWidth="135.0" text="Departure Time" />
+            <TableColumn fx:id="arrivalTimeColumn" editable="false" prefWidth="135.0" text="Arrival Time" />
+            <TableColumn fx:id="seatColumn" editable="false" minWidth="6.0" prefWidth="61.0" text="Seat" />
+            <TableColumn fx:id="fareColumn" editable="false" minWidth="6.0" prefWidth="61.0" text="Fare" />
+         </columns>
+      </TableView>
+      <Button fx:id="modifyButton" disable="true" layoutX="1032.0" layoutY="361.0" mnemonicParsing="false" onAction="#onModifyClicked" prefHeight="25.0" prefWidth="71.0" text="Modify" />
+      <Text layoutX="463.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reservations">
+         <font>
+            <Font name="Serif Bold" size="36.0" />
+         </font>
+      </Text>
+      <Button layoutX="15.0" layoutY="361.0" mnemonicParsing="false" onAction="#onBack" prefHeight="25.0" prefWidth="71.0" text="Back" />
+   </children>
+</Pane>

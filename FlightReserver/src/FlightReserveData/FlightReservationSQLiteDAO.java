@@ -1,0 +1,777 @@
+package FlightReserveData;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.time.LocalDate;
+
+public class FlightReservationSQLiteDAO {
+    private static final String DATABASE_URL = "jdbc:sqlite:src/FlightReserveData/userData.db";
+	
+    // Inserts flight records into the 'Flight' table
+    // Parameters:
+    // - flight: The Flight object containing flight information to be inserted
+	public static void insertFlight(Flight flight) {
+		try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+				Statement statement = connection.createStatement()){
+			String insertSQL = "INSERT INTO flights (flightId, departureAirportCode, destinationAirportCode, " +
+                    "departureDateTime, arrivalDateTime, availableSeats, totalSeats, fare) VALUES ('" +
+                    flight.getFlightNumber() + "', '" + flight.getDepartureAirportCode() + "', '" +
+                    flight.getDestinationAirportCode() + "', '" + flight.getDepartureDateTime() + "', '" +
+                    flight.getArrivalDateTime() + "', " + flight.getAvailableSeats() + ", " +
+                    flight.getTotalSeats() + ", " + flight.getFare() + ")";			statement.executeUpdate(insertSQL);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// Removes flight records from the database
+	// Parameters:
+	// - flight: The Flight object representing the flight to be removed
+	public static void removeFlight(Flight flight) {
+		removeSeatTable(flight.flightNumber);
+		removeReservationsByFlight(flight.flightNumber);
+		
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM flights WHERE flightId = ?")) {
+
+               statement.setString(1, flight.flightNumber);
+               System.out.println(statement + "\n"); 
+               statement.executeUpdate();                     
+           } catch (SQLException e) {
+               e.printStackTrace();
+           }
+	}
+	
+	// Retrieves the next available flight ID for inserting new flights
+	// Returns the next available flight ID or -1 if none is available
+    public static int getNextAvailableFlightId() throws SQLException {
+        int nextFlightId = -1; // Default value if no flightId is available
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+                PreparedStatement getMaxFlightIdStatement = connection.prepareStatement(
+                		"SELECT MAX(flightId) FROM flights")) {
+        	ResultSet resultSet = getMaxFlightIdStatement.executeQuery();
+            if (resultSet.next()) {
+                int maxFlightId = resultSet.getInt(1);
+                nextFlightId = maxFlightId + 1;
+            }
+        }        
+        return nextFlightId;
+    }
+	
+    // Inserts a new user into the 'User' table
+    // Parameters:
+    // - user: The User object containing user information to be inserted
+    public void insertUser(User user) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             Statement statement = connection.createStatement()) {
+
+            String insertSQL = "INSERT INTO User (userId, firstName, lastName, email, password) VALUES ('" +
+                    user.getUserId() + "', '" + user.getFirstName() + "', '" +
+                    user.getLastName() + "', '" + user.getEmail() + "', '" + user.getPassword() + "')";
+            statement.executeUpdate(insertSQL);
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+    }
+    
+    // Registers a new user
+    // Parameters:
+    // - firstName: The first name of the user
+    // - lastName: The last name of the user
+    // - email: The email of the user
+    // - password: The password of the user
+    // Returns true if registration is successful, false otherwise
+    public static boolean registerUser(String firstName, String lastName, String email, String password) {   	
+    	String hashedPassword = hashPassword(password);
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+                PreparedStatement statement = connection.prepareStatement(
+                        "INSERT INTO Users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)")) {
+
+               statement.setString(1, firstName);
+               statement.setString(2, lastName);
+               statement.setString(3, email);
+               statement.setString(4, hashedPassword);
+
+               int rowsInserted = statement.executeUpdate();
+               return rowsInserted > 0; // Return true if the registration is successful
+           } catch (SQLException e) {
+               // Handle exception (e.g., database error)
+               e.printStackTrace();
+               return false; // Return false if the registration fails
+           }
+    }
+    
+    // Updates user information in the 'Users' table
+    // Parameters:
+    // - user: The User object containing updated user information
+    // Returns the number of rows updated
+    public static int updateUser(User user) {
+    	try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+                PreparedStatement statement = connection.prepareStatement(
+                        "UPDATE Users SET firstName = ?, lastName = ?, email = ?, password = ? WHERE user_id = ?")) {
+
+               statement.setString(1, user.firstName);
+               statement.setString(2, user.lastName);
+               statement.setString(3, user.email);
+               statement.setString(4, hashPassword(user.password));
+               statement.setInt(5, user.getUserId());
+
+               return statement.executeUpdate();
+
+           } catch (SQLException e) {
+               e.printStackTrace();
+               return 0;
+           }
+    }
+    
+    // Retrieves a user based on email and hashed password
+    // Parameters:
+    // - email: The email of the user
+    // - unhashedPassword: The hashed password of the user
+    // Returns a User object if found, null otherwise
+    public static User getUser(String email, String unhashedPassword) {
+    	String password = hashPassword(unhashedPassword);
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+                PreparedStatement statement = connection.prepareStatement(
+                        "SELECT firstName, lastName, email, password, user_id FROM Users WHERE email = ? AND password = ?")) {
+              	statement.setString(1,  email);
+              	statement.setString(2, password);
+        		ResultSet rs = statement.executeQuery();
+        		if ( rs.next() ) {
+        	    	User user = new User();
+        	    	user.setEmail(rs.getString("email"));
+        	    	user.setPassword(rs.getString("password"));
+        			user.setFirstName(rs.getString("firstName"));
+        			user.setLastName(rs.getString("lastName"));
+        			user.setUserId(rs.getInt("user_id"));
+        			return user;
+        		} 
+           } catch (SQLException e) {
+               // Handle exception (e.g., database error)
+               e.printStackTrace();
+           }
+        return null;
+    }
+    
+    // Checks if a user with the given email already exists
+    // Parameters:
+    // - email: The email to check for existence
+    // Returns true if a user with the email already exists, false otherwise
+    public static boolean userAlreadyExists(String email) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT COUNT(*) FROM Users WHERE email = ?")) {
+
+            statement.setString(1, email);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    return count > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    // Inserts a reservation into the 'reservations' table
+    // Parameters:
+    // - reservation: The Reservation object to be inserted
+    public static void insertReservation(Reservation reservation) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             Statement statement = connection.createStatement()) {
+
+            String insertSQL = "INSERT INTO reservations (user_id, flight_number, seatId) VALUES (" +
+                    reservation.getUser().getUserId() + ", '" +
+                    reservation.getFlight().getFlightNumber() + "', " + reservation.getSeatId() + ")";
+            System.out.println(insertSQL);            
+            statement.executeUpdate(insertSQL + "\n");          
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+    }
+    
+    // Removes a reservation from the 'reservations' table
+    // Parameters:
+    // - reservationId: The ID of the reservation to be removed
+    public static void removeReservation(int reservationId) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement statement = connection.prepareStatement("DELETE FROM reservations WHERE reservation_id = ?")) {
+
+            statement.setInt(1, reservationId);
+            System.out.println(statement + "\n"); 
+            statement.executeUpdate();                     
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // Inserts an airport into the 'Airports' table
+    // Parameters:
+    // - airport: The Airport object containing airport information to be inserted
+    public static void insertAirport(Airport airport) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             Statement statement = connection.createStatement()) {
+
+            String insertSQL = "INSERT INTO Airports (airportCode, name, city, country) VALUES ('" +
+                    airport.getCode() + "', '" + airport.getName() + "', '" +
+                    airport.getCity() + "', '" + airport.getCountry() + "')";
+            statement.executeUpdate(insertSQL);
+
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+    }
+    
+    // Removes an airport and associated flights from the database
+    // Parameters:
+    // - airportCode: The code of the airport to be removed
+    public static void removeAirport(String airportCode) {
+    	List<Flight> airportFlights = searchFlights(airportCode, null, null);
+    	airportFlights.addAll(searchFlights(null, airportCode, null));
+    	for (Flight flight : airportFlights) {
+    		removeFlight(flight);
+    	}
+    	
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM Airports WHERE airportCode = ?")) {
+
+               statement.setString(1, airportCode);
+               statement.executeUpdate();                     
+           } catch (SQLException e) {
+               e.printStackTrace();
+           }
+    }
+    
+    // Retrieves a list of available airport codes
+    // Returns a list of available airport codes
+    public static List<String> getAvailableAirports() {
+        List<String> airports = new ArrayList<>();
+        
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement statement = connection.prepareStatement("SELECT airportCode FROM Airports");
+             ResultSet resultSet = statement.executeQuery()) {
+            
+            while (resultSet.next()) {
+                String airportCode = resultSet.getString("airportCode");
+                airports.add(airportCode);
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return airports;
+    }
+    
+    // Creates a seats table for a specific flight
+    // Parameters:
+    // - flightId: The ID of the flight for which to create the seats table
+    public static void createSeatsTable(int flightId) {
+        String tableName = "Seats_" + flightId;
+        String query = "CREATE TABLE " + tableName +
+                       " (id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                       " reservation_id INT," +
+                       " row_num INT," +
+                       " col_num INT," +
+                       " userId INT," +
+                       " FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id))";
+        
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             Statement statement = connection.createStatement()) {
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            // Handle exception
+            e.printStackTrace();
+        }
+    }
+    
+    // Removes a seats table for a specific flight
+    // Parameters:
+    // - flightId: The ID of the flight for which to remove the seats table
+    public static void removeSeatTable(String flightId) {
+        String tableName = "Seats_" + flightId;
+        
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             Statement statement = connection.createStatement()) {
+            String query = "DROP TABLE " + tableName;
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // Saves seat configuration for a specific flight
+    // Parameters:
+    // - flightId: The ID of the flight for which to save the seat configuration
+    // - row: The row number of the seat
+    // - col: The column number of the seat
+    // - isChecked: Whether the seat is checked (1) or not (0)
+    // - userId: The ID of the user associated with the seat
+    public static void saveSeatConfiguration(int flightId, int row, int col, int isChecked,  int userId) {
+        String tableName = "Seats_" + flightId;
+        String query = "INSERT INTO " + tableName + " (row_num, col_num, userId, reservation_id) VALUES (?, ?, ?, ?)";
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, row);
+            statement.setInt(2, col);
+            statement.setInt(3, userId);
+            statement.setInt(4, -1);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            // Handle exception
+            e.printStackTrace();
+        }
+    }
+    
+    // Removes reservations associated with a specific flight
+    // Parameters:
+    // - flightId: The ID of the flight for which to remove reservations
+    public static void removeReservationsByFlight(String flightId) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM reservations WHERE flight_number = ?")) {
+
+               statement.setString(1, flightId);
+               statement.executeUpdate();                     
+           } catch (SQLException e) {
+               e.printStackTrace();
+           }
+    }
+    
+    // Searches for flights based on source airport, destination airport, and departure date
+    // Parameters:
+    // - sourceAirportCode: Source airport code for filtering flights (null or empty to ignore)
+    // - destinationAirportCode: Destination airport code for filtering flights (null or empty to ignore)
+    // - departureDate: Departure date for filtering flights (null to ignore)
+    // Returns a list of Flight objects that match the search criteria
+    public static List<Flight> searchFlights(String sourceAirportCode, String destinationAirportCode, LocalDate departureDate) {
+        List<Flight> searchResults = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            StringBuilder query = new StringBuilder("SELECT * FROM flights WHERE 1=1");
+
+            if (sourceAirportCode != null && !sourceAirportCode.isEmpty()) {
+                query.append(" AND departureAirportCode = ?");
+            }
+
+            if (destinationAirportCode != null && !destinationAirportCode.isEmpty()) {
+                query.append(" AND destinationAirportCode = ?");
+            }
+ 
+            if (departureDate != null) {
+                query.append(" AND departureDateTime LIKE ?");
+            }
+
+            query.append(" ORDER BY departureDateTime");         
+
+            try (PreparedStatement statement = connection.prepareStatement(query.toString())) {
+                int parameterIndex = 1;
+
+                if (sourceAirportCode != null && !sourceAirportCode.isEmpty()) {
+                    statement.setString(parameterIndex++, sourceAirportCode);
+                }
+
+                if (destinationAirportCode != null && !destinationAirportCode.isEmpty()) {
+                    statement.setString(parameterIndex++, destinationAirportCode);
+                }
+
+                if (departureDate != null) {
+                    statement.setString(parameterIndex, departureDate.toString() + "%");
+                }
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        Flight flight = new Flight(
+                                resultSet.getString("flightId"),
+                                resultSet.getString("departureAirportCode"),
+                                resultSet.getString("destinationAirportCode"),
+                                resultSet.getString("departureDateTime"),
+                                resultSet.getString("arrivalDateTime"),
+                                resultSet.getInt("availableSeats"),
+                                resultSet.getInt("totalSeats"),
+                                resultSet.getDouble("fare")
+                        );
+                        searchResults.add(flight);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        }
+
+        return searchResults;
+    }
+        
+    // Updates the available seats for a flight in the 'Flight' table
+    // Parameters:
+    // - flightNumber: The flight number of the flight to update
+    // - newAvailableSeats: The new value of available seats
+    public void updateAvailableSeats(String flightNumber, int newAvailableSeats) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement statement = connection.prepareStatement(
+                     "UPDATE Flight SET availableSeats = ? WHERE flightNumber = ?")) {
+
+            statement.setInt(1, newAvailableSeats);
+            statement.setString(2, flightNumber);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            // Handle exception
+        }
+    }
+
+    // Retrieves a Flight object by its flight number from the 'Flight' table
+    // Parameters:
+    // - flightNumber: The flight number to retrieve
+    // Returns a Flight object or null if not found
+    public static Flight getFlightByFlightNumber(String flightNumber) {
+        Flight flight = null;
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT * FROM Flight WHERE flightNumber = ?")) {
+
+            statement.setString(1, flightNumber);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    flight = new Flight(
+                            resultSet.getString("flightNumber"),
+                            resultSet.getString("departureAirportCode"),
+                            resultSet.getString("destinationAirportCode"),
+                            resultSet.getString("departureDateTime"),
+                            resultSet.getString("arrivalDateTime"),
+                            resultSet.getInt("availableSeats"),
+                            resultSet.getInt("totalSeats"),
+                            resultSet.getDouble("fare")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            // Handle exception
+        }
+        return flight;
+    }
+
+    // Deletes a flight from the 'Flight' table by its flight number
+    // Parameters:
+    // - flightNumber: The flight number to delete
+    public void deleteFlightByFlightNumber(String flightNumber) {
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement statement = connection.prepareStatement(
+                     "DELETE FROM Flight WHERE flightNumber = ?")) {
+
+            statement.setString(1, flightNumber);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            // Handle exception
+        }
+    }
+    
+    // Retrieves the list of available airports from the 'Airports' table
+    // Returns a list of airport codes
+    public List<String> retrieveAvailableAirports() throws SQLException {
+    	List<String> availableAirports = new ArrayList<>();
+    	try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+                PreparedStatement statement = connection.prepareStatement("SELECT airportCode FROM Airports");
+                ResultSet resultSet = statement.executeQuery()) {
+
+               while (resultSet.next()) {
+                   String airportCode = resultSet.getString("airportCode");
+                   availableAirports.add(airportCode);
+               }
+
+           } catch (SQLException e) {
+               // Handle any database-related exceptions
+               e.printStackTrace();
+               throw e;
+           }
+
+           return availableAirports;
+    }	
+    
+    // Retrieves a list of all flights from the 'flights' table
+    // Returns a list of Flight objects
+    public List<Flight> retrieveAllFlights() throws SQLException {
+        List<Flight> flights = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * FROM flights")) {
+            while (resultSet.next()) {
+                // Create Flight objects and populate data from the result set
+                Flight flight = new Flight();
+                flight.setFlightNumber(resultSet.getString("flightId"));
+                flight.setDepartureAirportCode(resultSet.getString("departureAirportCode"));
+                flight.setDestinationAirportCode(resultSet.getString("destinationAirportCode"));
+                flight.setDepartureDateTime(resultSet.getString("departureDateTime"));
+                flight.setArrivalDateTime(resultSet.getString("arrivalDateTime"));
+                flight.setAvailableSeats(resultSet.getInt("availableSeats"));
+                flight.setTotalSeats(resultSet.getInt("totalSeats"));
+                flight.setFare(resultSet.getDouble("fare"));
+                // Set other properties accordingly
+                flights.add(flight);
+            }
+        }
+        return flights;
+    }
+    
+    // Retrieves the name of an airport by its code from the 'Airports' table
+    // Parameters:
+	// - airportCode: The code of the airport
+    // Returns the name of the airport or null if not found
+    public String getAirportNameByCode(String airportCode) throws SQLException {
+        String airportName = null;
+
+        String query = "SELECT name FROM airports WHERE airportCode = ?";
+        
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            
+            statement.setString(1, airportCode);
+            
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    airportName = resultSet.getString("name");
+                }
+            }
+        }
+
+        return airportName;
+    }
+    
+    // Retrieves a list of available seats for a flight
+    // Parameters:
+    // - flightNumber: The flight number for which to retrieve available seats
+    // Returns a list of int arrays representing seat coordinates [row, col, user_id]
+    static public List<int[]> getAvailableSeats(String flightNumber) {
+    	List<int[]> availableSeats = new ArrayList<>();
+        
+        String seatsTable = "Seats_" + flightNumber;
+        
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT row_num, col_num, userId FROM " + seatsTable)) {
+
+            while (resultSet.next()) {
+                int rowNum = resultSet.getInt("row_num");
+                int colNum = resultSet.getInt("col_num");
+                int user_id = resultSet.getInt("userId");
+                int[] seatCoords = {rowNum, colNum, user_id};
+                availableSeats.add(seatCoords);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the exception
+        }
+
+        return availableSeats;
+    }
+    
+    // Updates the user ID for a specific seat
+    // Parameters:
+    // - flightNumber: The flight number of the flight
+    // - row: The row number of the seat
+    // - col: The column number of the seat
+    // - userId: The new user ID to be set for the seat
+    public static void updateSeatUserId(String flightNumber, int row, int col, int userId) {
+        String seatsTable = "Seats_" + flightNumber;    
+
+        String updateQuery = "UPDATE " + seatsTable + " SET userId = ? WHERE row_num = ? AND col_num = ?";
+        
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, row);
+            preparedStatement.setInt(3, col);
+            System.out.println(preparedStatement); 
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the exception
+        }
+    }
+    
+    // Retrieves the seat ID based on user, row, and column
+    // Parameters:
+    // - flightNumber: The flight number of the flight
+    // - row: The row number of the seat
+    // - col: The column number of the seat
+    // - userId: The user ID of the user associated with the seat
+    // Returns the seat ID or -1 if not found
+    public static int getSeatId(String flightNumber, int row, int col, int userId) {
+    	int seatId = -1;
+        String seatsTable = "Seats_" + flightNumber;    
+
+        String updateQuery = "SELECT id FROM " + seatsTable + " WHERE userId = ? AND row_num = ? AND col_num = ?";
+        
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setInt(1, userId);
+            preparedStatement.setInt(2, row);
+            preparedStatement.setInt(3, col);
+            System.out.println(preparedStatement + "\n");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                seatId = resultSet.getInt("id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the exception
+        }
+        return seatId;
+    }
+    
+    // Retrieves a list of reservations for a specific user
+    // Parameters:
+    // - userId: The ID of the user for whom to retrieve reservations
+    // Returns a list of Reservation objects
+    public List<Reservation> retrieveUserReservations(int userId) throws SQLException {
+        List<Reservation> userReservations = new ArrayList<>();
+        
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement statement = connection.prepareStatement(
+                     "SELECT * FROM reservations INNER JOIN flights ON reservations.flight_number = flights.flightId WHERE user_id = ?")) {
+            
+            statement.setInt(1, userId);
+            
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int reservationId = resultSet.getInt("reservation_id");
+                    //int flightId = resultSet.getInt("flightId");
+                    
+                    // Retrieve the associated flight using the flightId
+                    Flight flight = new Flight();
+                    flight.setFlightNumber(resultSet.getString("flightId"));
+                    flight.setDepartureAirportCode(resultSet.getString("departureAirportCode"));
+                    flight.setDestinationAirportCode(resultSet.getString("destinationAirportCode"));
+                    flight.setDepartureDateTime(resultSet.getString("departureDateTime"));
+                    flight.setArrivalDateTime(resultSet.getString("arrivalDateTime"));
+                    flight.setFare(resultSet.getDouble("fare"));
+                    
+                    // Create a new Reservation object
+                    Reservation reservation = new Reservation();
+                    reservation.setReservationId(String.valueOf(reservationId));
+                    reservation.setFlight(flight); // Set the retrieved Flight object
+                    
+                    userReservations.add(reservation);
+                }
+            }
+        }
+        
+        return userReservations;
+    }
+    
+    // Retrieves the row and column coordinates of a seat based on reservation and flight IDs
+    // Parameters:
+    // - reservationId: The ID of the reservation
+    // - flightId: The ID of the flight
+    // Returns an int array with seat coordinates [row, column]
+    public static int[] getFlightSeatRowAndColumn(String reservationId, String flightId) {
+        int[] seatCoords = new int[2]; // Assuming [row, column]
+
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "SELECT row_num, col_num FROM Seats_" + flightId + " WHERE reservation_id = ?")) {
+            preparedStatement.setString(1, reservationId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    seatCoords[0] = resultSet.getInt("row_num");
+                    seatCoords[1] = resultSet.getInt("col_num");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the exception appropriately
+        }
+        System.out.println("s0:" + seatCoords[0] + " s1:" + seatCoords[1]);
+        return seatCoords;
+    }
+    
+    // Retrieves the reservation ID based on user, flight number, and seat ID
+    // Parameters:
+    // - userId: The ID of the user
+    // - flightNumber: The flight number
+    // - seatId: The seat ID
+    // Returns the reservation ID or -1 if not found
+    public static int getReservationId(int userId, String flightNumber, int seatId) {
+        int reservationId = -1; // Default value if not found
+
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            String query = "SELECT reservation_id FROM reservations WHERE user_id = ? AND flight_number = ? AND seatId = ?";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, userId);
+                statement.setString(2, flightNumber);
+                statement.setInt(3, seatId);
+                System.out.println(statement + "\n");
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        reservationId = resultSet.getInt("reservation_id");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return reservationId;
+    }
+    
+    // Sets the reservation ID for a specific seat
+    // Parameters:
+    // - flightNumber: The flight number of the flight
+    // - row: The row number of the seat
+    // - col: The column number of the seat
+    // - userId: The user ID of the user associated with the seat
+    // - reservationId: The reservation ID to be set for the seat
+    public static void setSeatReservationId(String flightNumber, int row, int col, int userId, int reservationId) {
+    	String seatsTable = "Seats_" + flightNumber; 
+        try (Connection connection = DriverManager.getConnection(DATABASE_URL)) {
+            String query = "UPDATE " + seatsTable + " SET reservation_id = ? WHERE row_num = ? AND col_num = ? AND userId = ?";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, reservationId);
+                statement.setInt(2, row);
+                statement.setInt(3, col);
+                statement.setInt(4, userId);
+                System.out.println(statement + "\n");
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // Hashes the user's password securely using SHA-256
+    // Parameters:
+    // - password: The password to be hashed
+    // Returns the hashed password
+    private static String hashPassword(String password) {
+    	try {
+    		MessageDigest md = MessageDigest.getInstance("SHA-256");
+    		byte[] hashBytes = md.digest(password.getBytes());
+    		StringBuilder hashStringBuilder = new StringBuilder();
+    		
+    		// Convert bytes to hexadecimal
+    		for (byte hashByte : hashBytes) {
+    			String hex = Integer.toHexString(0xff & hashByte);
+    			if (hex.length() == 1) hashStringBuilder.append('0');
+    			hashStringBuilder.append(hex);
+    		}
+    		
+    		return hashStringBuilder.toString();
+    	} catch (NoSuchAlgorithmException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	return password;
+    }
+}
