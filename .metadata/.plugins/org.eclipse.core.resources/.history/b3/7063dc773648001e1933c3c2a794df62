@@ -12,7 +12,7 @@ import java.util.List;
 import java.time.LocalDate;
 
 public class FlightReservationSQLiteDAO {
-    private static final String DATABASE_URL = "jdbc:sqlite:../data/userData.db";
+    private static final String DATABASE_URL = "jdbc:sqlite:data/userData.db";
 	
     // Inserts flight records into the 'Flight' table
     // Parameters:
