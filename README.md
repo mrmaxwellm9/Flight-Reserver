@@ -16,13 +16,18 @@ When you open the application you will see the following interface which allows 
 
 When you click the register button you will be shown this interface ![yHRT8mr](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/d22a594d-16c1-4e88-9c01-36a186c0ebde) To create a user account you need to enter a first name, last name, and unique email and password combination. If the email and password combination is already being used the application will inform you and you will need to enter new information. On successful account registration, the user will be taken to the user's home page which looks like this for regular users ![De8L2VV](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/a41e3571-a5d3-4187-a244-9790a26dfbf7) and this for the admin account. ![48LQbaO](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/0ae52cfd-51f4-410e-9699-3a2272a920d9)
 
-
-
 #### Logging in
+
+When you click the login button you will be shown this interface![52tOpzz](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/b11192b3-e058-4b00-8933-9a03bbc2cb4d) where you will enter a matching account email and password. Upon successful login, you will be brought to the user's home page.
 
 ### Searching and Booking Flights
 
+If you click the "Search and Book Flights" button on the user home screen you will be shown an interface like this. ![me0Qsi0](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/08073dd9-bea9-4477-bb38-e6017636a0a7) This is the default search flight screen with a couple of added example flights. You can filter the flights by selecting a departure airport, destination airport, and departure date in the top filters and then clicking search. When you find a flight you would like to book you can either select the flight by clicking once and then click the "Book Now" button in the bottom right or double-click the desired flight in the flight search table. In this example, if I were to book a seat on the flight from SFO to LAX I would double-click the Flight Numer 1 row to have this popup displayed ![hVEM958](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/d19f3727-dbb2-4a75-a1ba-242bbb1c9ed8) then from there I would check the seat I would like to reserve as shown here ![PYG33KM](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/e5220f2c-d8be-4c62-9179-1a47dff4cc3b) then I would click the bottom right book button which will bring up a confirmation popup and upon confirmation the seat is booked and will be grayed out for other users trying to reserve seats on the same flight.
+
 ### Viewing Reserved Flights
+
+If you would like to change your seat or cancel a reservation, from the user home screen you would click the "View Reserved Flights" button to be shown the following interface (assuming the logged in user has a reservation) ![rzyEABt](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/850ba6d4-3131-4c2c-b5ce-57f22233dea3)
+
 
 ### Editing Profile
 
