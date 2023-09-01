@@ -10,10 +10,11 @@ The flight reserver application allows users to create and log into user account
 
 ### User Registration and Login
 
-When you open the application you will see a screen like this![66sS26m](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/29e6ac0b-fa41-4803-9bac-d19f6077b176)
-
+When you open the application you will see the following interface which allows you to be directed to the login or register page. ![66sS26m](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/29e6ac0b-fa41-4803-9bac-d19f6077b176) 
 
 #### User Registration
+
+When you click the register button you will be shown this interface ![yHRT8mr](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/d22a594d-16c1-4e88-9c01-36a186c0ebde) To create a user account you need to enter a first name, last name, and unique email and password combination. If the email and password combination is already being used the application will inform you and you will need to enter new information. On successful account registration, the user will be taken to the user's home page which looks like this for regular users.
 
 #### Logging in
 
