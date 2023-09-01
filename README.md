@@ -27,9 +27,12 @@ If you click the "Search and Book Flights" button on the user home screen you wi
 ### Viewing Reserved Flights
 
 If you would like to change your seat or cancel a reservation, from the user home screen you would click the "View Reserved Flights" button to be shown the following interface (assuming the logged in user has a reservation) ![rzyEABt](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/850ba6d4-3131-4c2c-b5ce-57f22233dea3)
-
+Then you can edit the reservation by selecting the reservation to edit by clicking the reservation row once and then clicking "Modify" on the bottom right or double-clicking the reservation row. When you do that something like this interface will show. ![Vn8Nh4L](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/f1270aa0-4867-428b-af04-7b847f532bf6)
+To change the seat you check a different seat and then click "Modify", or if you want to cancel the reservation, click the "Cancel Reservation" button.
 
 ### Editing Profile
+
+If you want to edit your profile, from the user home page click the "Edit Profile" button which will show the following interface. ![KT2E0nu](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/3919daeb-b271-4073-9cb8-0fff333aeb3b) You then will enter the information you want to be associated with the logged in account and click save. Similar to registering a user you also need a unique email and password pair. Then click save and the account's information will be updated if valid.
 
 ### Admin Controls
 
