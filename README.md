@@ -10,6 +10,7 @@ The flight reserver application allows users to create and log into user account
 
 ### User Registration and Login
 
+When you open the application you will see a screen like this![66sS26m](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/29e6ac0b-fa41-4803-9bac-d19f6077b176)
 
 
 #### User Registration
