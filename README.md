@@ -31,11 +31,11 @@ where you will enter a matching account email and password. Upon successful logi
 ## **Searching and Booking Flights**
 
 If you click the "Search and Book Flights" button on the user home screen you will be shown an interface like this.
-![me0Qsi0](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/08073dd9-bea9-4477-bb38-e6017636a0a7)\
+![me0Qsi0](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/08073dd9-bea9-4477-bb38-e6017636a0a7) \\
 This is the default search flight screen with a couple of added example flights. You can filter the flights by selecting a departure airport, destination airport, and departure date in the top filters and then clicking search. When you find a flight you would like to book you can either select the flight by clicking once and then click the "Book Now" button in the bottom right or double-click the desired flight in the flight search table. In this example, if I were to book a seat on the flight from SFO to LAX I would double-click the Flight Numer 1 row to have this popup displayed
-![hVEM958](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/d19f3727-dbb2-4a75-a1ba-242bbb1c9ed8)\
+![hVEM958](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/d19f3727-dbb2-4a75-a1ba-242bbb1c9ed8) \\
 then from there I would check the seat I would like to reserve as shown here
-![PYG33KM](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/e5220f2c-d8be-4c62-9179-1a47dff4cc3b) \
+![PYG33KM](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/e5220f2c-d8be-4c62-9179-1a47dff4cc3b) \\
 then I would click the bottom right book button which will bring up a confirmation popup and upon confirmation, the seat is booked and will be grayed out for other users trying to reserve seats on the same flight.
 
 ## **Viewing Reserved Flights**
