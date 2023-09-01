@@ -2,7 +2,7 @@
 
 ## **Usage**
 
-To use download and extract the repository to a folder, then run the [Flight Reserver](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/Flight%20Reserver.lnk =100x100) shortcut. Alternatively, enter the [run_files](https://github.com/mrmaxwellm9/Flight-Reserver/tree/main/run_files) folder and run the [bat file](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/run_files/RunFlightReserver.bat) or [shell script file](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/run_files/RunFlightReserver.sh) depending on your system.
+To use download and extract the repository to a folder, then run the [Flight Reserver](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/Flight%20Reserver.lnk) shortcut. Alternatively, enter the [run_files](https://github.com/mrmaxwellm9/Flight-Reserver/tree/main/run_files) folder and run the [bat file](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/run_files/RunFlightReserver.bat) or [shell script file](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/run_files/RunFlightReserver.sh) depending on your system.
 
 ## **Features**
 
@@ -10,7 +10,7 @@ The flight reserver application allows users to create and log into user account
 
 ### **User Registration and Login**
 
-When you open the application you will see the following interface which allows you to be directed to the login or register page. ![66sS26m](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/29e6ac0b-fa41-4803-9bac-d19f6077b176) 
+When you open the application you will see the following interface which allows you to be directed to the login or register page. ![66sS26m](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/29e6ac0b-fa41-4803-9bac-d19f6077b176  =100x100) 
 
 ### **User Registration**
 
