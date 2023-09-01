@@ -2,7 +2,7 @@
 
 ## **Usage**
 
-To use download and extract the repository to a folder, then run the [Flight Reserver](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/Flight%20Reserver.lnk) shortcut. Alternatively, enter the [run_files](https://github.com/mrmaxwellm9/Flight-Reserver/tree/main/run_files) folder and run the [bat file](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/run_files/RunFlightReserver.bat) or [shell script file](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/run_files/RunFlightReserver.sh) depending on your system.
+To use download and extract the repository to a folder, then run the [Flight Reserver](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/Flight%20Reserver.lnk =x100) shortcut. Alternatively, enter the [run_files](https://github.com/mrmaxwellm9/Flight-Reserver/tree/main/run_files) folder and run the [bat file](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/run_files/RunFlightReserver.bat) or [shell script file](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/run_files/RunFlightReserver.sh) depending on your system.
 
 ## **Features**
 
