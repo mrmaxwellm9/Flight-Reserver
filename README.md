@@ -2,6 +2,8 @@
 
 ## Usage
 
+To use download and extract the repository to a folder, then run the [Flight Reserver](https://github.com/mrmaxwellm9/Flight-Reserver/blob/main/Flight%20Reserver.lnk)
+
 ## Features
 
 ### User Registration and Login
