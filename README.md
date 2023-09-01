@@ -42,8 +42,8 @@ Then I would click the bottom right book button which will bring up a confirmati
 
 If you would like to change your seat or cancel a reservation, from the user home screen you would click the "View Reserved Flights" button to be shown the following interface (assuming the logged-in user has a reservation)
 ![rzyEABt](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/850ba6d4-3131-4c2c-b5ce-57f22233dea3)
-Then you can edit the reservation by selecting the reservation to edit by clicking the reservation row once and then clicking "Modify" on the bottom right or double-clicking the reservation row. When you do that something like this interface will show. 
-![Vn8Nh4L](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/f1270aa0-4867-428b-af04-7b847f532bf6)
+Then you can edit the reservation by selecting the reservation to edit by clicking the reservation row once and then clicking "Modify" on the bottom right or double-clicking the reservation row. When you do that something like this interface will show. <br/>
+![Vn8Nh4L](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/f1270aa0-4867-428b-af04-7b847f532bf6) <br/>
 To change the seat you check a different seat and then click "Modify", or if you want to cancel the reservation, click the "Cancel Reservation" button.
 
 ## **Editing Profile**
@@ -73,11 +73,11 @@ Here you will select an airport code from the dropdown menu and then click remov
 
 To add a flight, from the "Admin Controls" interface click the "Add Flight" button. This will show you the following interface
 ![aQ046z7](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/899ae9ef-8611-4be0-9237-2a4843fffc8f)
-To start making a flight first click the "Add Flight" button on the bottom right which will show this popup
-![ig3eS5F](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/9e849467-fc60-4d56-9427-a2e6188d23ca)
-here enter the maximum row and column needed to display the flight. For example, if the plane has 8 isles and at most 4 seats per isle with a gap between the seat sets, you would enter "5 8" and click "OK". This will populate the add flight menu with a grid that you can fill in to set the seats. If filled in as previously described the interface could look like this
+To start making a flight first click the "Add Flight" button on the bottom right which will show this popup <br/>
+![ig3eS5F](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/9e849467-fc60-4d56-9427-a2e6188d23ca) <br/>
+Here enter the maximum row and column needed to display the flight. For example, if the plane has 8 isles and at most 4 seats per isle with a gap between the seat sets, you would enter "5 8" and click "OK". This will populate the add flight menu with a grid that you can fill in to set the seats. If filled in as previously described the interface could look like this
 ![mFxeUel](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/3fa96b23-9409-4f9f-9751-d95181300135)
-Then you just need to add the airport, date, and time for the destination and departure of the flight as well as a fare for all the seats. When everything is entered correctly click "Save Flight" on the bottom to add the flight the the search flight view. Then, when a user views the seat selection for this example it will look like so.
+Then you just need to add the airport, date, and time for the destination and departure of the flight as well as a fare for all the seats. When everything is entered correctly click "Save Flight" on the bottom to add the flight the the search flight view. Then, when a user views the seat selection for this example it will look like so. <br/>
 ![gUDYX7x](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/c18009b2-7d90-4eb4-ad5f-47334f8f3b36)
 
 ### **Removing Flights**
