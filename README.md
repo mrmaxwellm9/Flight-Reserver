@@ -76,7 +76,7 @@ To add a flight, from the "Admin Controls" interface click the "Add Flight" butt
 To start making a flight first click the "Add Flight" button on the bottom right which will show this popup <br/>
 ![ig3eS5F](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/9e849467-fc60-4d56-9427-a2e6188d23ca) <br/>
 Here enter the maximum row and column needed to display the flight. For example, if the plane has 8 isles and at most 4 seats per isle with a gap between the seat sets, you would enter "5 8" and click "OK". This will populate the add flight menu with a grid that you can fill in to set the seats. If filled in as previously described the interface could look like this
-![mFxeUel](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/3fa96b23-9409-4f9f-9751-d95181300135)
+![265073204-3fa96b23-9409-4f9f-9751-d95181300135](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/ceb129d0-290e-4f55-83f8-41c579bd7a1d)
 Then you just need to add the airport, date, and time for the destination and departure of the flight as well as a fare for all the seats. When everything is entered correctly click "Save Flight" on the bottom to add the flight the the search flight view. Then, when a user views the seat selection for this example it will look like so. <br/>
 ![gUDYX7x](https://github.com/mrmaxwellm9/Flight-Reserver/assets/130167736/c18009b2-7d90-4eb4-ad5f-47334f8f3b36)
 
